@@ -1,18 +1,20 @@
 from requests_html import HTMLSession
+import urllib.request
+from bs4 import BeautifulSoup
 
 session = HTMLSession()
 
 
 def get_central_products():
-    url_central = "https://tucentralonline.com/Plaza-Las-Americas-03/tienda/"
-    r = session.get(url_central)
+    url_central = urllib.request.urlopen('https://gamaenlinea.com/ALIMENTOS-FRESCOS/L%C3%A1cteos/Mantequilla-Margarina/MARGARINA-CON-SAL-NELLY-500-GR/p/10003343').read().decode()
+    #r = session.get(url_central)
 
-    # r.html.find('li.product-col:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(2) > h3:nth-child(1)')
+    #r.html.find("html body.page-productDetails.pageType-ProductPage.template-pages-product-productLayout2Page.smartedit-page-uid-productDetails.language-es main div div.product-details.page-title div.name", first = True).text
 
-    return r
+    soup = BeautifulSoup(url_central, features="lxml")
+    div = soup.find('class="name"')
+    print(div)
 
-
-print(get_central_products())
-
+get_central_products()
 
 
