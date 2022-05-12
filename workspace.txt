@@ -6,3 +6,5 @@ https://openwebinars.net/blog/crea-tu-primera-aplicacion-en-flask/
 https://flask-es.readthedocs.io/quickstart/#a-minimal-application
 https://pypi.org/project/requests-html/
 https://gamaenlinea.com/VIVERES/c/001?q=%3Arelevance&page=0
+https://docs.python.org/es/3.8/library/re.html
+https://openwebinars.net/blog/como-hacer-web-scraping-con-python/
