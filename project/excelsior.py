@@ -1,7 +1,5 @@
 #! /bin/python3
 
-from fileinput import filename
-from unicodedata import category
 from bs4 import BeautifulSoup
 from time import sleep 
 import urllib.request
