@@ -1,0 +1,8 @@
+http://copitosystem.com/es/first-serious-python-project/
+https://github.com/cosme12/cheatsheet-maker/tree/master/sheetmaker
+https://github.com/LilBreadUwupy/supermarket-price
+https://www.delftstack.com/es/howto/python/python-project-structure/
+https://openwebinars.net/blog/crea-tu-primera-aplicacion-en-flask/
+https://flask-es.readthedocs.io/quickstart/#a-minimal-application
+https://pypi.org/project/requests-html/
+https://gamaenlinea.com/VIVERES/c/001?q=%3Arelevance&page=0
