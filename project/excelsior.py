@@ -5,7 +5,7 @@ import urllib.request
 import re 
 
 
-def iterar_url(n):
+def get_url(n):
     url = "https://gamaenlinea.com/VIVERES/c/001?q=%3Arelevance&page={}".format(n)
     return url 
 
@@ -35,7 +35,7 @@ def get_href_tags(url):
 
 def main():
     for n in range(62):
-        url = iterar_url(n)
+        url = get_url(n)
         get_href_tags(url)
     print("Todos los links han sido obtenidos")
 
