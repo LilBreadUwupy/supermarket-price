@@ -1,19 +1,18 @@
 #! /bin/python3
 
+import pickle
 from bs4 import BeautifulSoup
 from time import sleep 
 import urllib.request
 import re 
 
-
-def get_url(category, category_number, n):
-    url = "https://gamaenlinea.com/{}/c/{}?q=%3Arelevance&page={}".format(category, category_number, n)
-    
-    return url
+categories = ["VIVERES", "ALIMENTOS-FRESCOS", "BEBIDAS", "CUIDADO-PERSONAL", "LIMPIEZA", "HOGAR", "MASCOTAS", "OCASION", "CUIDADO-DE-LA-SALUD"]
+categories_n = ["001", "002", "003", "004", "005", "006", "007", "008", "009"]
 
 
 def get_href_tags(url, category):
     connection = False
+
     while not connection:
         try:
             url = urllib.request.urlopen(url).read().decode()
@@ -28,34 +27,32 @@ def get_href_tags(url, category):
 
     for tag in tags:
         tag = tag.get('href')
-        links.append(tag)
-    
-    urls = []
+        try: 
+            tag = re.findall(f'/{category}/[a-zA-Z-]*/[a-zA-Z-]*/[A-Za-z0-9-]*.*', tag)
+            
+            if tag:
+                tag = 'https://gamaenlinea.com' + str(tag)
+                tag =  tag.replace('[', '').replace("'", "").replace("]", "")
+                links.append(tag)
 
-    for link in links:
-        try:
-            link = re.findall(f'/{category}/[a-zA-Z-]*/[a-zA-Z-]*/[A-Za-z0-9-]*.*', link)
-            if link:
-                urls.append(link)
         except TypeError:
             pass
-
-    links.clear()
-
-    for url in urls:
-        url = 'https://gamaenlinea.com' + str(url)
-        url = url.replace('[', '').replace("'", "").replace("]", "")
-        links.append(url)
         
     return links
 
 
 def create_file(category):
     file_directory = "/home/lilbreaduwu/Documentos/proyectos/projectfolder/test/"
-    file_name = f"Excelsior-gamma-{category.lower()}.txt"
+    file_name = f"Excelsior-gamma-{category.lower()}.pkl"
     file_data = file_directory + file_name
-    file = open(file_directory + file_name, "a")
-    file.write(f"Lista de enlaces en la categoría {category.lower()}")
+    
+    try:
+        file = open(file_directory + file_name, "a")
+        with open("file_name", "r") as file:
+            all_links = pickle.load(file)
+            #file.write(f"Lista de enlaces en la categoría {category.lower()}")
+    except FileNotFoundError:
+        all_links = []
 
     return file_data
 
@@ -65,7 +62,7 @@ def write_file(file_data, urls):
     file.write(urls + "\n")
 
 
-def list_of_page_to_range(category, categories):
+def get_range(category):
 
     if category == categories[0]:
         r = 62
@@ -90,21 +87,23 @@ def list_of_page_to_range(category, categories):
 
 
 def main():
-    categories = ["VIVERES", "ALIMENTOS-FRESCOS", "BEBIDAS", "CUIDADO-PERSONAL", "LIMPIEZA", "HOGAR", "MASCOTAS", "OCASION", "CUIDADO-DE-LA-SALUD"]
-    category_numbers = ["001", "002", "003", "004", "005", "006", "007", "008", "009"]
+    
     index_category = 0
 
     for category in categories:
 
         print(f"Empezando a obtener enlaces de la categoría {category.lower()}...")
         sleep(5)
+
         file_data = create_file(category)
 
-        category_number = category_numbers[index_category]
-        r = list_of_page_to_range(category, categories)
+        category_n = categories_n[index_category]
+
+        r = get_range(category)
+
         for n in range(r):
-            
-            url = get_url(category, category_number, n)
+
+            url =  url = f"https://gamaenlinea.com/{category}/c/{category_n}?q=%3Arelevance&page={n}"
             links = get_href_tags(url, category)
 
             print(f"Obteniendo enlaces de {url}... ({n+1}/{r})")
