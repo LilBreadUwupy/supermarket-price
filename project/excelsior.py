@@ -10,110 +10,111 @@ categories = ["VIVERES", "ALIMENTOS-FRESCOS", "BEBIDAS", "CUIDADO-PERSONAL", "LI
 categories_n = ["001", "002", "003", "004", "005", "006", "007", "008", "009"]
 
 
-def get_href_tags(url, category):
-    connection = False
+def get_href_tags(category, category_n, r):
+    for n in range(r):
 
-    while not connection:
-        try:
-            url = urllib.request.urlopen(url).read().decode()
-            soup = BeautifulSoup(url, features="lxml")
-            tags = soup("a")
-            connection = True
-        except:
-            print("Error conexión no segura, reintentando en 20 segundos")
-            sleep(20)
+        url = f"https://gamaenlinea.com/{category}/c/{category_n}?q=%3Arelevance&page={n}"
+        connection = False
+        print(f"Obteniendo enlaces de {url}... ({n+1}/{r})")
 
-    links = []
+        while not connection:
+            try:
+                url = urllib.request.urlopen(url).read().decode()
+                soup = BeautifulSoup(url, features="lxml")
+                tags = soup("a")
+                connection = True
+            except:
+                print("Error conexión no segura, reintentando en 20 segundos")
+                sleep(20)
 
-    for tag in tags:
-        tag = tag.get('href')
-        try: 
-            tag = re.findall(f'/{category}/[a-zA-Z-]*/[a-zA-Z-]*/[A-Za-z0-9-]*.*', tag)
-            
-            if tag:
-                tag = 'https://gamaenlinea.com' + str(tag)
-                tag =  tag.replace('[', '').replace("'", "").replace("]", "")
-                links.append(tag)
+        links = []
 
-        except TypeError:
-            pass
+        
+
+        for tag in tags:
+            tag = tag.get('href')
+            try: 
+                tag = re.findall(f'/{category}/[a-zA-Z-]*/[a-zA-Z-]*/[A-Za-z0-9-]*.*', tag)
+
+                if tag:
+                    tag = 'https://gamaenlinea.com' + str(tag) + "\n"
+                    tag =  tag.replace('[', '').replace("'", "").replace("]", "")
+                    links.append(tag)
+
+            except TypeError:
+                pass
         
     return links
 
 
-def create_file(category):
-    file_directory = "/home/lilbreaduwu/Documentos/proyectos/projectfolder/test/"
-    file_name = f"Excelsior-gamma-{category.lower()}.pkl"
-    file_data = file_directory + file_name
+def create_file():
+    index_category = 0
+
+    for category in categories:
+
+        file_directory = "/home/lilbreaduwu/Documentos/proyectos/projectfolder/test/"
+        file_name = f"excelsior-gamma-{category.lower()}.pkl"
+        file_data = file_directory + file_name
+        
+        
+        try:
+            print(f"Cargando el archivo {file_name}")
+            with open(file_data, "rb") as file:
+                all_links = pickle.load(file)
+                #file.write(f"Lista de enlaces en la categoría {category.lower()}")
+        except FileNotFoundError:
+            print("Archivo no encontrado! descargando datos de internet...")
+            sleep(2)
+            all_links = main(category, index_category)
+            index_category += 1
+            with open(file_data, "wb") as file:
+                # file.write(all_links)
+                print(f"Escribiendo datos en {file_name}...")
+                sleep(2)
+                pickle.dump(all_links, file)
     
-    try:
-        file = open(file_directory + file_name, "a")
-        with open("file_name", "r") as file:
-            all_links = pickle.load(file)
-            #file.write(f"Lista de enlaces en la categoría {category.lower()}")
-    except FileNotFoundError:
-        all_links = []
-
-    return file_data
-
-
-def write_file(file_data, urls):
-    file = open(file_data, "a")
-    file.write(urls + "\n")
+   
+    print("Todos los links han sido cargados")
+    return all_links
 
 
 def get_range(category):
 
     if category == categories[0]:
-        r = 62
+        r = 2 #62
     elif category == categories[1]:
-        r = 22
+        r = 2#22
     elif category == categories[2]:
-        r = 29
+        r = 2#29
     elif category == categories[3]:
-        r = 19
+        r = 19#19
     elif category == categories[4]:
-        r = 11
+        r = 11#11
     elif category == categories[5]:
-        r = 7
+        r = 7#7
     elif category == categories[6]:
-        r = 3
+        r = 3#3
     elif category == categories[7]:
-        r = 4
+        r = 4#4
     else:
-        r = 6
+        r = 6#6
         
     return r 
 
 
-def main():
+def main(category, index_category):
     
-    index_category = 0
+    
 
-    for category in categories:
+    print(f"Empezando a obtener enlaces de la categoría {category.lower()}...")
+    sleep(5)
 
-        print(f"Empezando a obtener enlaces de la categoría {category.lower()}...")
-        sleep(5)
+    category_n = categories_n[index_category]
+    r = get_range(category)
+    links = get_href_tags(category, category_n, r)
+    
 
-        file_data = create_file(category)
-
-        category_n = categories_n[index_category]
-
-        r = get_range(category)
-
-        for n in range(r):
-
-            url =  url = f"https://gamaenlinea.com/{category}/c/{category_n}?q=%3Arelevance&page={n}"
-            links = get_href_tags(url, category)
-
-            print(f"Obteniendo enlaces de {url}... ({n+1}/{r})")
-
-            for link in links:
-                write_file(file_data, link)
-
-        index_category += 1
-
-    print("Todos los links han sido obtenidos")
+    return links
 
 
-main()
+create_file()
