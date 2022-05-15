@@ -1,12 +1,30 @@
+#! /bin/python3
 
-def get_url(n):
-    categories = ["VIVERES", "ALIMENTOS-FRESCOS", "BEBIDAS", "CUIDADO-PERSONAL", "LIMPIEZA", "HOGAR", "MASCOTAS", "OCASIÓN", "CUIDADO-DE-LA-SALUD"]
-    categories_num = ["001", "002", "003", "004", "005", "006", "007", "008", "009"]
-    for categorie in categories:
-        cn = 0
-        url = "https://gamaenlinea.com/{}/c/{}?q=%3Arelevance&page={}".format(categorie, categories_num[cn], n)
-        cn += 1
-        return url 
+from ast import Try
+from os import link
+import pickle
+from unicodedata import category
+from bs4 import BeautifulSoup
+from time import sleep 
+import urllib.request
+import re 
+url = f"https://gamaenlinea.com/VIVERES/c/001?q=%3Arelevance&page=0"
+url = urllib.request.urlopen(url).read().decode()
+soup = BeautifulSoup(url, features="lxml")
+tags = soup("a")
 
+links = []
+for tag in tags:
+        tag = tag.get('href') 
+        
+        try:
+            tag = re.findall(f'//[A-Za-z0-9-]*/[A-Za-z0-9-]*/[A-Za-z0-9-]*/p/.*', tag)
+            if tag:
+                tag = 'https://gamaenlinea.com' + str(tag)
+                tag =  tag.replace('[', '').replace("'", "").replace("]", "")
+                links.append(tag)
+        except TypeError:
+                pass
 
-print(get_url(10))
+print(links)
+print(type(links))
