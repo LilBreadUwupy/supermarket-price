@@ -46,41 +46,40 @@ def get_href_tags(category, category_n, r):
 
 
 def create_file():
-    index_category = 7
-    #option = input("¿Desea crear un único archivo con todos los datos? (Y/n)")
-        
-    for category in categories:
+    index_category = 0
+    all_links = False
+    file_name = 'excelsior-gamma-database.pkl' 
+    file_directory = "/home/lilbreaduwu/Documentos/proyectos/projectfolder/database/"
+    file_data = file_directory + file_name
 
-        #file_name = 'excelsior-gamma-database.txt' 
-        file_name = f"excelsior-gamma-{category.lower()}.txt"
-        file_directory = "/home/lilbreaduwu/Documentos/proyectos/projectfolder/test/"
-        file_data = file_directory + file_name
-        
-        
-        try:
-            print(f"Cargando el archivo {file_name}")
-            open(file_data, "r") #as file:
-                #all_links = pickle.load(file)
-                #file.write(f"Lista de enlaces en la categoría {category.lower()}")
-        except FileNotFoundError:
-            print("Archivo no encontrado! descargando datos de internet...")
+    try:
+        print(f"Cargando el archivo {file_name}")
+        with open(file_data, "rb") as file:
+                all_links = pickle.load(file)
+    except FileNotFoundError:
+        print("Archivo no encontrado! descargando datos de internet...")
+        for category in categories:
+
+            category_n = categories_n[index_category]
+            r = get_range(category)
             sleep(2)
-            all_links = main(category, index_category)
-            index_category += 1
-            with open(file_data, "a") as file:
-                file.write(f"Categoría: {category}\n")
+
+            all_links = get_href_tags(category, category_n, r)
+
+           
+
+            with open(file_data, "ab") as file:
+                #file.write(f"Categoría: {category}\n")
                 print(f"Escribiendo datos en {file_name}...")
-                for link in all_links:
-                    file.write(link)
-                sleep(2)
-                #pickle.dump(all_links, file)
-    
-   
+                pickle.dump(all_links, file)
+                #for link in all_links:
+                    #file.write(link)
+            index_category += 1
+
+
     print("Todos los links han sido cargados")
-    if all_links:
-        return all_links
-    else: 
-        return file
+
+    return all_links
 
 
 def get_range(category):
@@ -92,34 +91,16 @@ def get_range(category):
     elif category == categories[2]:
         r = 29
     elif category == categories[3]:
-        r = 19#19
+        r = 19
     elif category == categories[4]:
-        r = 11#11
+        r = 11
     elif category == categories[5]:
-        r = 7#7
+        r = 7
     elif category == categories[6]:
-        r = 3#3
+        r = 3
     elif category == categories[7]:
-        r = 4#4
+        r = 4
     else:
         r = 6#6
         
     return r 
-
-
-def main(category, index_category):
-    
-    
-
-  
-    sleep(5)
-
-    category_n = categories_n[index_category]
-    r = get_range(category)
-    links = get_href_tags(category, category_n, r)
-    
-
-    return links
-
-
-create_file()
