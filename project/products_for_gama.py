@@ -1,39 +1,76 @@
 from bs4 import BeautifulSoup
 from urls_for_gama import create_file
-import urllib
+from time import sleep
+import urllib.request
+from ssl import SSLCertVerificationError 
+from urllib.error import URLError
 import re
 
 
 urls = create_file()
-repeat_urls = []
+
 
 product_info = {
-    'Supermarket-Gama': {
-        'Product': 'Salsa',
-        'Price' : '1.7',
-        'Link' : 'https://gamaenlinea.com/VIVERES/Aceites-y-aderezos/Sazonadores/SALSA-DE-AJO-EXCELSIOR-GAMA-150-CC/p/10014778',
-        'ID' : '001'
+
+    'supermarket': 'Excelsior gamma',
+    'ID': '',
+    'Link' : '',
+    'Product' : '',
+    'Price' : ''
+
     }   
-}
+
+product_data = {
+        'Gama express': ''
+    }
 
 def get_price_and_name():
-
+    id = 1
+    lost_links = 0
     #Itera urls
     for url in urls:
-        repeat_urls.append(url)
-        url = urllib.request.urlopen(url).read().decode()
-        soup = BeautifulSoup(url, 'lxml')
+        print(f'Obteniendo base de datos de Gama express ({id}/{len(urls)})')
+        new_product = product_info.copy()
+        new_product['Link'] = url.replace('\n', '')
+        new_product['ID'] = id
+        connection = False
 
+        while not connection:
+            try:
+                url = urllib.request.urlopen(url).read().decode()
+                soup = BeautifulSoup(url, 'lxml')
+                connection = True
+            except SSLCertVerificationError:
+                print("SSLCertVerificationError: reintentando en 20 segundos")
+                sleep(20)
+            except URLError:
+                print("URLError: reintentando en 10 segundos")
+                sleep(10)
+                #lost_links += 1
+
+       
         # Get product with soup and cut with regex
         product = soup.find("div", {"class":"name"})
-        product = str(re.findall('name">[A-Z0-9a-z /  %-]*<', str(product)))
-        product = product.replace('[', '').replace("'", "").replace("]", "").replace('name">', "").replace('<', "").lower()
+        product = str(re.findall('name">[A-ZÁÉÍÓÚ0-9a-záéíóúñÑ %-/]*<', str(product)))
+        new_product['Product'] = product.replace('[', '').replace("'", "").replace("]", "").replace('name">', "").replace('<', "").lower()
 
         #Get price with soup and cut with regex
         price = soup.find("div", {"class":"from-price-value"})
         price = str(re.findall('Total Ref. ([0-9,]*)', str(price)))
-        price = price.replace('[', '').replace("'", "").replace("]", "")
+        new_product["Price"] = price.replace('[', '').replace("'", "").replace("]", "")
 
-            
-        print(f"Producto: {product} precio: ${price}")
+        id += 1
+        product_data['Gama express'] = new_product 
+        with open('Prueba.txt', 'a') as file:
+            file.write(str(new_product) + '\n')
 
+        for r in range(1,11):
+            if str(id) == f'{r}00': 
+                print('Durmiendo 60 segundos antes de continuar')
+                sleep(60)
+
+    
+    print(f"Base de datos obtenida, se perdieron{lost_links} durante el proceso creando archivo...")
+    
+
+get_price_and_name()
