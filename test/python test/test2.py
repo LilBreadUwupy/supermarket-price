@@ -5,7 +5,16 @@
 #                     #file.write(f"Lista de enlaces en la categoría {category.lower()}")
 #             except FileNotFoundError:
 
-
+{'Supermarket': 
+    {'supermarket': 'Excelsior gamma', 
+    'Product': '', 
+    'Price': '', 
+    'Link': '', 
+    'ID': ''}, 
+    'Link': 'https://gamaenlinea.com/VIVERES/Aceites-y-aderezos/Sazonadores/SALSA-DE-AJO-EXCELSIOR-GAMA-150-CC/p/10014778\n',
+    'ID': 1, 
+    'Product': 'salsa de ajo excelsior gama 150 cc', 
+    'Price': '1,24'}
 
 """#urls = ["https://gamaenlinea.com/VIVERES/Aceites-y-aderezos/Sazonadores/SALSA-DE-AJO-EXCELSIOR-GAMA-150-CC/p/10014778",
             "https://gamaenlinea.com/VIVERES/Aceites-y-aderezos/Sazonadores/SALSA-DE-AJO-EXCELSIOR-GAMA-150-CC/p/10014778",
