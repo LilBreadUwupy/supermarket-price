@@ -1,40 +1,46 @@
-#! /bin/python3
+#! ~/anaconda3/envs/project/bin/python
 
+from urllib.error import URLError
 from bs4 import BeautifulSoup
 from time import sleep 
 import urllib.request
+from urllib.error import URLError
 import pymysql
-import pickle
 import re 
 
 # List of categories in https://gamaenlinea.com
-categories = ["VIVERES", "ALIMENTOS-FRESCOS", "BEBIDAS", "CUIDADO-PERSONAL", "LIMPIEZA", "HOGAR", "MASCOTAS", "OCASI%C3%93N", "CUIDADO-DE-LA-SALUD"]
-categories_n = ["001", "002", "003", "004", "005", "006", "007", "008", "011"]
+CATEGORIES = ["VIVERES", "ALIMENTOS-FRESCOS", "BEBIDAS", "CUIDADO-PERSONAL", "LIMPIEZA", "HOGAR", "MASCOTAS", "OCASI%C3%93N", "CUIDADO-DE-LA-SALUD"]
+CATEGORY_NUMBERS = ["001", "002", "003", "004", "005", "006", "007", "008", "011"]
 
 
 def get_urls():
 
     index = 0
     links = []
+    for category in CATEGORIES:
 
-    for category in categories:
-       category_n = categories_n[index]
+       category_number = CATEGORY_NUMBERS[index]
        r = get_range(category)
        index += 1
        print(f"Empezando a obtener enlaces de la categoría {category.lower()}...")
+       sleep(30)
+
        for n in range(r):
-            url = f"https://gamaenlinea.com/{category}/c/{category_n}?q=%3Arelevance&page={n}"
+
+            url = f"https://gamaenlinea.com/{category}/c/{category_number}?q=%3Arelevance&page={n}"
             print(f"Obteniendo enlaces de {url}... ({n+1}/{r})")
             connection = False
+
             while not connection:
                 try:
                     url = urllib.request.urlopen(url).read().decode()
                     soup = BeautifulSoup(url, features="lxml")
                     tags = soup("a")
                     connection = True
-                except:
-                    print("Error conexión no segura, reintentando en 20 segundos")
+                except URLError:
+                    print("URLError: revise su conexión a https://gamaenlinea.com, reintentando en 20s")
                     sleep(20)
+
             for tag in tags:
                 tag = tag.get('href')
                 try: 
@@ -46,10 +52,12 @@ def get_urls():
                             links.append(tag)
                 except TypeError:
                     pass
+    print("Todos los enlaces han sido obtenidos")
     return links
 
-def save_to_db():
 
+def save_to_db():
+    print('Conectando a la base de datos...')
     db = pymysql.connect(
         host="localhost",
         user='root',
@@ -58,15 +66,19 @@ def save_to_db():
     )
     cur = db.cursor()
 
-    print(cur.execute('SHOW TABLES;'))
-
+    if input('Puede que exista una base de datos anterior ¿Desea borrarla?(y/n)') == "Y":
+        sql = "DELETE FROM supermarketlinks WHERE supermarket='ExcelsiorGama';"
+        cur.execute(sql)
+        print("Base de datos borrada con exito")
+    else:
+        return "Como existe una base de datos, se ha detido el proceso"
+    
     sql = """CREATE TABLE IF NOT EXISTS supermarketlinks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    supermarket VARCHAR(255),
-    link VARCHAR(255));"""
-
-   
+             id INT AUTO_INCREMENT PRIMARY KEY,
+             supermarket VARCHAR(255),
+             link VARCHAR(255));"""
     cur.execute(sql)
+
     links = get_urls()
     for link in links:
         sql = "INSERT INTO supermarketlinks(supermarket,link) VALUE ('ExcelsiorGama', '%s')" % (link);
@@ -74,29 +86,30 @@ def save_to_db():
     db.commit()
     db.close()
 
-    return print('Guardado en la base de datos con exito')
+    return print('Todos los links han sido guardados en la base de datos con exito')
 
 
 def get_range(category):
-    if category == categories[0]:
-        r = 1#62 
-    elif category == categories[1]:
-        r = 1#22
-    elif category == categories[2]:
-        r = 1#29
-    elif category == categories[3]:
-        r = 1#19
-    elif category == categories[4]:
-        r = 1#11
-    elif category == categories[5]:
-        r = 1#7
-    elif category == categories[6]:
-        r = 1#3
-    elif category == categories[7]:
-        r = 1#4
+    if category == CATEGORIES[0]:
+        r = 62 
+    elif category == CATEGORIES[1]:
+        r = 22
+    elif category == CATEGORIES[2]:
+        r = 29
+    elif category == CATEGORIES[3]:
+        r = 19
+    elif category == CATEGORIES[4]:
+        r = 11
+    elif category == CATEGORIES[5]:
+        r = 7
+    elif category == CATEGORIES[6]:
+        r = 3
+    elif category == CATEGORIES[7]:
+        r = 4
     else:
-        r = 1#6
+        r = 6
         
     return r 
+
 
 save_to_db()
