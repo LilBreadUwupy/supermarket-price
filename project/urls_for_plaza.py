@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import urllib.request
 from urllib.error import URLError
 import re
+import pymysql
 
 
 categories = ['FRUTAS-Y-VEGETALES', 'VÍVERES', 'REFRIGERADOS-Y-CONGELADOS', 'LICORES', 'LIMPIEZA', 'CUIDADO-PERSONAL-Y-SALUD', 'MASCOTAS', 'HOGAR-Y-TEMPORADA', 'OTROS']
@@ -19,6 +20,7 @@ def get_url():
             print(f"Obteniendo enlaces de {url}... ({i+1}/{r-1})")
             i += 1
             connection = False
+
             while not connection:
                 try:
                     url = urllib.request.urlopen(url).read().decode()
@@ -33,13 +35,12 @@ def get_url():
                 tag = tag.get('href')
                 tag = re.findall('Product.php.code=[0-9]*&suc=[0-9]*', tag)
                 if tag:
-                    tag = 'https://www.elplazas.com/' + str(tag) + '\n'
+                    tag = 'https://www.elplazas.com/' + str(tag)
                     tag = tag.replace('[', '').replace("'", "").replace("]", "")
                 if tag not in links:
                     links.append(tag)
-          
-    with open('Prueba-plaza.txt', 'a') as file:
-        file.write(str(links))
+
+    return links     
 
 
 def get_range(n):
@@ -65,7 +66,23 @@ def get_range(n):
     return r 
 
 
-get_url()
+def save_to_db():
+    db = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="supermarketdb"
+    )
+    cur = db.cursor()
+    
+    links = get_url()
 
+    for link in links:
+        sql = "INSERT INTO supermarketlinks(supermarket,link) VALUE ('AutomercadoPlazas', '%s')" % (link);
+        cur.execute(sql)
+    db.commit()
+    db.close()
+    
+    return print("Todos los links han sido guardados en la base de datos")
 
 
