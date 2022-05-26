@@ -21,8 +21,11 @@ CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product VARCHAR(255),
     price VARCHAR(255),
+    img LONGBLOB,
     supermarket VARCHAR(255),
     link VARCHAR(255)
 );
+
+INSERT INTO products(img) SEL
 
 INSERT INTO products (product, price, supermarket, link) VALUES ("Jamón", "$5", "ExcelsiorGama", "https://gamaenlinea.com/VIVERES/Aceites-y-aderezos/Sazonadores/SALSA-DE-AJO");
