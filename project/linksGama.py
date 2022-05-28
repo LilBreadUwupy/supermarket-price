@@ -114,6 +114,7 @@ def run_script_and_save_data():
     index = 0
     database = open_database()
     delete_db(database)
+    
     for category in CATEGORIES:
 
         category_number = CATEGORY_NUMBERS[index]
@@ -130,3 +131,5 @@ def run_script_and_save_data():
             save_to_db(database, links)
             
         index += 1
+
+run_script_and_save_data()

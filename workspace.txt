@@ -11,3 +11,10 @@ https://docs.python.org/es/3/library/urllib.error.html
 https://openwebinars.net/blog/como-hacer-web-scraping-con-python/
 https://es.stackoverflow.com/questions/120963/obtener-informacion-de-un-div-sin-id-con-beautifulsoup-python
 https://www.pythonfixing.com/2022/02/fixed-beautifulsoup-attributeerror.html
+https://mariadb.com/kb/en/select/
+https://mariadb.com/kb/en/create-database/
+https://www.neoguias.com/como-conectarse-a-mysql-usando-python/
+https://programmerclick.com/article/2309778591/
+https://www.lawebdelprogramador.com/foros/SQL/1235716-poner-una-URL-en-una-consulta-SQL.html
+https://www.mejorcodigo.com/p/52740.html
+https://es.acervolima.com/verifique-si-la-tabla-existe-en-sqlite-usando-python/

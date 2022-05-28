@@ -30,9 +30,6 @@ def get_price_and_name():
                 url = urllib.request.urlopen(link).read().decode()
                 soup = BeautifulSoup(url, 'lxml')
                 connection = True
-            except SSLCertVerificationError:
-                print("SSLError: reintentando en 10 segundos")
-                sleep(10)
             except URLError:
                 print("URLError: reintentando en 10 segundos")
                 sleep(10)
@@ -46,6 +43,9 @@ def get_price_and_name():
         price = soup.find("div", {"class":"from-price-value"})
         price = str(re.findall('Total Ref. ([0-9,]*)', str(price)))
         price = price.replace('[', '').replace("'", "").replace("]", "")
+
+        #Get img with soup
+
 
         #Write price and product in database 
         sql = "INSERT INTO products (product, price, supermarket, link) VALUES ('%s', '%s', 'ExcelsiorGama', '%s')" % (product, f"${price}", link );
