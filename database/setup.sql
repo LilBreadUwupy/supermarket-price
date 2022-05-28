@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product VARCHAR(255),
     price VARCHAR(255),
-    img LONGBLOB,
+    img VARCHAR(255),
     supermarket VARCHAR(255),
     link VARCHAR(255)
 );

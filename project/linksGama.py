@@ -131,3 +131,5 @@ def run_script_and_save_data():
             save_to_db(database, links)
             
         index += 1
+
+run_script_and_save_data()

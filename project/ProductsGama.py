@@ -6,6 +6,7 @@ from time import sleep
 import urllib.request
 import requests 
 from ssl import SSLCertVerificationError 
+from requests.exceptions import SSLError
 from urllib.error import URLError
 import re
 
@@ -59,15 +60,23 @@ def get_img(soup, name):
         if img:
             n += 1
             img = "https://gamaenlinea.com/" + img 
-            r = requests.get(img).content
+            connection = False
+            while not connection:
+                try:
+                    r = requests.get(img).content
+                    connection = True
+                except Exception:
+                    print('SSLError: reintentado en 20 segundos')
+                    sleep(20)
+
+            name = name.replace('/', '').replace(' ', '\\')
 
             try:
-                name = name.replace('/', '')
-                os.mkdir('static/img/' + name)
+                os.mkdir('static/img/ExcelsiorGama/' + name)
             except FileExistsError:
                 pass 
 
-            file_directory = f'static/img/{name}/'
+            file_directory = f'static/img/ExcelsiorGama/{name}/'
             name_img = f'img{n}.jpg'
 
             with open(file_directory + name_img, "wb") as file:
@@ -105,3 +114,6 @@ def get_links_and_run_script():
         
 
 get_links_and_run_script()
+# soup = request_url('https://gamaenlinea.com/ALIMENTOS-FRESCOS/Carnes/Pollo/POLLO-A-LA-BRASA-1-UN/p/28002125')
+# name = get_name(soup)
+# print(get_img(soup, name))
