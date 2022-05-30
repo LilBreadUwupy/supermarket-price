@@ -1,0 +1,60 @@
+
+body {
+    border: 1px solid black;
+    font-family: 'Arial' 'Roboto';
+    margin: 0;
+    padding: 0;
+
+}
+
+
+/* Start navbar style  */
+
+.navbar-type-1 {
+    background-color: #ffffff;
+    font-family: Raleway, sans-serif;
+    font-size: 1.1rem;
+    height: 6rem;
+    width: 100%;
+    position: fixed;
+} 
+
+.list-type-1 {
+    display: inline-block;
+    margin: 1rem 2rem 2rem 2rem;
+    list-style: none;
+
+}
+
+.anchor-type-1 {
+    color: black;
+    text-decoration: none;
+}
+
+/* End navbar style */
+
+
+main {
+    margin-top: 6rem;
+}
+
+.supermarket-h1-div{
+    font-family: 'Satisfy', cursive;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-size: 3.5rem; 
+    font-weight: 300;
+    height: 50rem;
+    color: #ffffff;
+}
+
+#h1-plazas {
+    background-color: #57C838;
+}
+
+#h1-gama {
+    background-color: #E1000F;
+}
+
+

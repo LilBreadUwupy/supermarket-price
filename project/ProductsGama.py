@@ -1,5 +1,4 @@
 import os
-from unicodedata import name
 from bs4 import BeautifulSoup
 import pymysql
 from time import sleep
@@ -52,7 +51,28 @@ def get_price(soup):
     return price
 
 
-def get_img(soup, name):
+def create_folder(name, link):
+    
+    category = str(re.findall('https://gamaenlinea.com/([A-Z0-9-%]*)/', link))
+    category = category.replace('[', '').replace("'", "").replace("]", "").lower()
+    try:
+        os.mkdir('static/img/ExcelsiorGama/' + category)
+    except FileExistsError:
+        pass
+
+    name = name.replace("/", "").replace(" ", "")
+    try:
+        os.mkdir(f'static/img/ExcelsiorGama/{category}/'  +  name)
+    except FileExistsError:
+        pass
+    
+    folder = f'static/img/ExcelsiorGama/{category}/{name}/'
+    
+    return folder
+    
+
+
+def get_img(soup, folder):
     tags = soup('img')
     n = 0 
     for tag in tags:
@@ -69,20 +89,12 @@ def get_img(soup, name):
                     print('SSLError: reintentado en 20 segundos')
                     sleep(20)
 
-            name = name.replace('/', '').replace(' ', '\\')
+            img_name = f'img{n}.jpg'
 
-            try:
-                os.mkdir('static/img/ExcelsiorGama/' + name)
-            except FileExistsError:
-                pass 
-
-            file_directory = f'static/img/ExcelsiorGama/{name}/'
-            name_img = f'img{n}.jpg'
-
-            with open(file_directory + name_img, "wb") as file:
+            with open(folder + img_name, "wb") as file:
                 file.write(r)
     
-    img = file_directory + 'img1.jpg'
+    img = folder + 'img1.jpg'
 
     return img
 
@@ -107,7 +119,8 @@ def get_links_and_run_script():
         link = url[0]
         soup = request_url(link)
         name = get_name(soup)
-        img = get_img(soup, name)
+        folder = create_folder(name, link)
+        img = get_img(soup, folder)
         price = get_price(soup)
         db = open_db()
         save_to_db(db, name, price, img, link )
