@@ -74,7 +74,7 @@ def create_folder(name, link):
     except FileExistsError:
         pass
 
-    name = name.replace("/", "").replace(" ", "")
+    name = name.replace("/", "").replace(" ", "").replace("'", "")
     try:
         os.mkdir(f'static/img/ExcelsiorGama/{category}/'  +  name)
     except FileExistsError:

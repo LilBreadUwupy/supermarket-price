@@ -19,8 +19,18 @@ require "partials/header.php";
 
     if (isset($_POST['search'])) {
         $keywords = $_POST['keywords'];
-        printf($keywords);
-        $imgs = $conn->query("SELECT * FROM products WHERE supermarket='ExcelsiorGama' AND (product LIKE '%" . $keywords . "%')");
+        $keywords= explode(' ',$keywords);
+        $imgs = $conn->query("SELECT * FROM products WHERE supermarket='ExcelsiorGama' AND (product LIKE '%" . $keyword . "%')");
+        $len_keywords = count($keywords);
+        if ($len_keywords == 1) {
+            $query = "SELECT * FROM products WHERE supermarket='ExcelsiorGama' AND (product LIKE '%" . $keywords[0] . "%')";
+        } else if (coun){}
+        
+            foreach ($keywords as $keyword ) {
+                $query += 
+                $imgs = $conn->query("SELECT * FROM products WHERE supermarket='ExcelsiorGama' AND (product LIKE '%" . $keyword . "%')");
+            }
+        
     } else {
         $imgs = $conn->query("SELECT * FROM products WHERE supermarket='ExcelsiorGama' LIMIT 105");
     } ?>
@@ -29,9 +39,12 @@ require "partials/header.php";
     <?php 
     foreach ($imgs as $img):?>
         <section class="section-type-1">
-            <h3>
-                <?= ucfirst($img["product"])?>
-            </h3>
+            <a href="<?= $img["link"] ?>" class="anchor-type-1" target="_blank">
+                <h3>
+                    <?= ucfirst($img["product"])?>
+                </h3>
+            </a>
+            
             <p>
                 <?= $img["price"] ?>
             </p>
