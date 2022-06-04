@@ -33,6 +33,20 @@ def request_url(link):
     return soup
 
 
+def check_link(db, link):
+    cur = db.cursor()
+    #print(f"Este es el link {link}")
+    sql = "SELECT COUNT(*) FROM products WHERE link='%s'" % link ;
+    cur.execute(sql)
+    exists = cur.fetchall()
+    exists = exists[0][0]
+    #print(f'Existe? {exists}')
+    if exists > 0:
+        return True
+    else: 
+        return False
+
+
 def get_name(soup):
 
     product = soup.find("div", {"class":"name"})
@@ -117,13 +131,17 @@ def get_links_and_run_script():
         n += 1
         print(f'Obteniendo productos ({n}/{len(urls)})')
         link = url[0]
-        soup = request_url(link)
-        name = get_name(soup)
-        folder = create_folder(name, link)
-        img = get_img(soup, folder)
-        price = get_price(soup)
-        db = open_db()
-        save_to_db(db, name, price, img, link )
+        exists = check_link(db, link)
+        if not exists:
+            soup = request_url(link)
+            name = get_name(soup)
+            folder = create_folder(name, link)
+            img = get_img(soup, folder)
+            price = get_price(soup)
+            db = open_db()
+            save_to_db(db, name, price, img, link )
+        else:
+            print("El producto ya esta en la base de datos")
         
 
 get_links_and_run_script()

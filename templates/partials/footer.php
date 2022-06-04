@@ -1,3 +1,3 @@
-        </Main>
+        </main>
    </body>
 </html>

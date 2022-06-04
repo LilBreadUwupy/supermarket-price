@@ -1,7 +1,6 @@
-import re
-link = "https://gamaenlinea.com/ALIMENTOS-FRESCOS/Productos-del-Campo/Huevos/HUEVOS-FRESCOS-EXCELSIOR-GAMA-%28A%29-12-UN/p/10025636"
+name = "pepino germinado"
+img_name = name.replace(' ', '').replace('/', "").replace('\n', '') + '.jpg'
+folder = "static/img/AutomercadoPlazas/"
 
-
-category= str(re.findall('https://gamaenlinea.com/([A-Z0-9-%]*)/', link))
-category = category.replace('[', '').replace("'", "").replace("]", "")
-print(type(link))
+print(folder + img_name)
+"rabano (kg)"

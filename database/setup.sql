@@ -26,6 +26,11 @@ CREATE TABLE IF NOT EXISTS products (
     link VARCHAR(255)
 );
 
+SELECT COUNT(*) AS link_exists FROM products WHERE link="https://gamanlinea.com/VIVERES/Aceites-y-aderezos/Sazonadores/SALSA-INGLESA-EXCELSIOR-GAMA-150-CC/p/10014782";
+
+
+SELECT * FROM products WHERE supermarket ='ExcelsiorGama' AND (product LIKE "frijoles");
+
 INSERT INTO products(img) SEL
 
 INSERT INTO products (product, price, supermarket, link) VALUES ("Jamón", "$5", "ExcelsiorGama", "https://gamaenlinea.com/VIVERES/Aceites-y-aderezos/Sazonadores/SALSA-DE-AJO");

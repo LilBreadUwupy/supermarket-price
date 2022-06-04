@@ -19,8 +19,8 @@
 <body>
     <?php 
     require "navbar.php";?>
+    <main>
+       
 
-    <?php require "footer.php";
-    ?>
-   
+
     

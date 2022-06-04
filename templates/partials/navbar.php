@@ -7,13 +7,13 @@
             <a class="anchor-type-1" href="gama.php"> Excelsior Gama</a>
         </li>
         <li class="list-type-1"> 
-            <a class="anchor-type-1" href="plaza.php"> Supermercado Plazas</a>
+            <a class="anchor-type-1" href="plaza.php"> Automercado Plazas</a>
         </li>
         <li class="list-type-1">
-            <a class="anchor-type-1" href="#"> Central Madeirense</a>
+            <a class="anchor-type-1" href="cm.php"> Central Madeirense</a>
         </li>
         <li class="list-type-1">
-            <a class="anchor-type-1"href="#">Planzuarez </a>
+            <a class="anchor-type-1"href="plansuarez.php">Planzuarez </a>
         </li>
         <li class="list-type-1">
             <a class="anchor-type-1" href="#"> Todos</a>

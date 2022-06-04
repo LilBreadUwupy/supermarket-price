@@ -1,4 +1,3 @@
-from multiprocessing import connection
 import os
 from bs4 import BeautifulSoup
 import pymysql
@@ -36,9 +35,21 @@ def request_url(link):
     return soup
 
 
+def check_link(db, link):
+    cur = db.cursor()
+    sql = "SELECT COUNT(*) FROM products WHERE link='%s'" % link ;
+    cur.execute(sql)
+    exists = cur.fetchall()
+    exists = exists[0][0]
+    if exists > 0:
+        return True
+    else: 
+        return False
+
+
 def get_name(soup):
     product = str(soup.find("div", {"class":"ProductName"}))
-    product = product.replace('<div class="ProductName">', '').replace('</div>', '').replace('(UN)', '').replace('\n', '').replace("    ", "").lower()
+    product = product.replace('<div class="ProductName">', '').replace('</div>', '').replace('(UN)', '').replace('\n', '').replace("    ", "").replace("\r", "").lower()
 
     return product
 
@@ -51,18 +62,21 @@ def get_price(soup):
 
     return price
 
+
 def get_img(soup, name):
 
     tags = soup('img')
     for tag in tags:
 
         img = tag.get('src')
-        img = re.findall('./[A-Z-]*/[0-9]*/img.jpg[?0-9]*', img)
+        img = re.findall('./[A-Z-]*/[0-9]*/[A-Za-z0-9]*.jpg[?0-9]*', img)
 
         if img:
-            img_name = name.title().replace(' ', '').replace('/', "") + '.jpg'
+            
+            img_name = name.replace(' ', "").replace('/', "").replace("\t", "").replace(",", "")
+            img_name = img_name + '.jpg'
             img = "https://www.elplazas.com/" + img[0]
-            folder = "static/img/AutomercadoPlazas/" + img_name
+            folder = f"static/img/AutomercadoPlazas/{img_name}"
             connection = False
 
             while not connection:
@@ -72,10 +86,9 @@ def get_img(soup, name):
                 except Exception:
                     print('SSLError: reintentado en 20 segundos')
                     sleep(20)
-            
             with open(folder, "wb") as file:
                 file.write(r)
-
+            
             return folder
 
 
@@ -96,12 +109,16 @@ def run_script():
         n += 1
         print(f'Obteniendo productos ({n}/{len(urls)})')
         link = url[0]
-        soup = request_url(link)
-        name = get_name(soup)
-        price = get_price(soup)
-        img = get_img(soup, name)
-        db = open_db()
-        save_to_db(db, name, price, img, link)
+        exists = check_link(db, link)
+        if not exists:
+            soup = request_url(link)
+            name = get_name(soup)
+            price = get_price(soup)
+            img = get_img(soup, name)
+            db = open_db()
+            save_to_db(db, name, price, img, link)
+        else: 
+            print("El producto ya existe en la base de datos")
 
 
 run_script()
