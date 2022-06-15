@@ -1,7 +1,7 @@
- 
+<!--  
 ## Bugs
 
-## Preguntas frecuentes
+## Preguntas frecuentes -->
 
 ## Table of Contents
 
@@ -24,4 +24,4 @@ A list of technologies use within the project:
 * [Beautiful-Soup-4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/): Version 2.34
 * [MySQL](https://dev.mysql.com/doc/refman/8.0/en/innodb-introduction.html): Version 15.1
 
-## FAQs
+### FAQs
