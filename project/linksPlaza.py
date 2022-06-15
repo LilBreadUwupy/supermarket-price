@@ -2,22 +2,14 @@ from time import sleep
 from bs4 import BeautifulSoup
 import urllib.request
 from urllib.error import URLError
+from linksGama import open_database
 import re
 import pymysql
 
+# Plazas' categories list
 
 categories = ['FRUTAS-Y-VEGETALES', 'VÍVERES', 'REFRIGERADOS-Y-CONGELADOS', 'LICORES', 'LIMPIEZA', 'CUIDADO-PERSONAL-Y-SALUD', 'GOURMET PLAZAS', 'MASCOTAS', 'HOGAR-Y-TEMPORADA', 'OTROS']
 cat_number = [ '01', '03', '02', '06', '05', '04', '09', '07', '08', '10']
-""" Por cada categoría 'cat=01W' cambia un número"""
-
-def open_database():
-    db = pymysql.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="supermarketdb"
-    )
-    return db
 
 
 def get_tags(url):
@@ -58,7 +50,6 @@ def save_to_db(db, links):
     db.commit()
     db.close()
     
-
 
 def get_range(n):
     if n == cat_number[0]:
@@ -103,9 +94,3 @@ def run_script():
     return links     
 
 run_script()
-
-
-
-
-
-

@@ -1,5 +1,3 @@
-#! ~/anaconda3/envs/project/bin/python
-
 from urllib.error import URLError
 from urllib.error import URLError
 from bs4 import BeautifulSoup
@@ -8,13 +6,26 @@ from time import sleep
 import pymysql
 import re
 
+#  Gama's categories list
 
-# List of categories in https://gamaenlinea.com
 CATEGORIES = ["VIVERES", "ALIMENTOS-FRESCOS", "BEBIDAS", "CUIDADO-PERSONAL", "LIMPIEZA", "HOGAR", "MASCOTAS", "OCASI%C3%93N", "CUIDADO-DE-LA-SALUD"]
 CATEGORY_NUMBERS = ["001", "002", "003", "004", "005", "006", "007", "008", "011"]
 
 
 def get_tags(url):
+
+    """
+    Function:
+        Send a request to url and get the tags in the html
+
+    Args: 
+        url (String): link of one Excelsior gama's category
+
+    Returns: 
+        tags (list): list with tags 'a'
+
+    """
+
     connection = False
     while not connection:
         try:
@@ -23,12 +34,25 @@ def get_tags(url):
             tags = soup("a")
             connection = True
         except URLError:
-            print("URLError: revise su conexión a https://gamaenlinea.com, reintentando en 20s")
+            print("URLError: revise su conexión, reintentando en 20s")
             sleep(20)
     return tags
 
 
 def clear_tags(tags, category):
+
+    """
+    Function:
+        Create a list links, get tag 'href' and add all links that point to a product
+
+    Args:
+        tags (list): list with tags 'a'
+        category (string): The name of the actual excelsior gama's  category
+
+    Returns: 
+        links (list): Gama's product link list
+    """
+
     links = []
     for tag in tags:
         tag = tag.get('href')
@@ -45,29 +69,51 @@ def clear_tags(tags, category):
         
 
 def get_range(category):
-    if category == CATEGORIES[0]:
-        r = 62 #1
-    elif category == CATEGORIES[1]:
-        r = 22 #1
-    elif category == CATEGORIES[2]:
-        r = 29 #1
-    elif category == CATEGORIES[3]:
-        r = 19 #1
-    elif category == CATEGORIES[4]:
-        r = 11 #1
-    elif category == CATEGORIES[5]:
-        r = 7 #1
-    elif category == CATEGORIES[6]:
-        r = 3 #1
-    elif category == CATEGORIES[7]:
-        r = 4 #1
-    else:
-        r = 6 #1
 
-    return r 
+    """
+    Function:
+        Compare the current category to know the number of pages to iterate
+    
+    Args:
+        category (string): The name of the actual excelsior gama's category
+
+    Returns:
+        range (int): range to iterate the category
+    """
+
+    if category == CATEGORIES[0]:
+        range = 62 #1
+    elif category == CATEGORIES[1]:
+        range = 22 #1
+    elif category == CATEGORIES[2]:
+        range = 29 #1
+    elif category == CATEGORIES[3]:
+        range = 19 #1
+    elif category == CATEGORIES[4]:
+        range = 11 #1
+    elif category == CATEGORIES[5]:
+        range = 7 #1
+    elif category == CATEGORIES[6]:
+        range = 3 #1
+    elif category == CATEGORIES[7]:
+        range = 4 #1
+    else:
+        range = 6 #1
+
+    return range
 
 
 def open_database():
+
+    """
+    Function:
+        Open mysql database using pymysql
+    
+    Returns: 
+        database: database connection
+
+    """
+
     database = pymysql.connect(
         host="localhost",
         user="root",
@@ -78,15 +124,20 @@ def open_database():
 
 
 def save_to_db(db, links):
+    
+    """
+    Function:
+        Insert links in database
+    
+    Args:
+        db: database connection
+        links (list): Gama's product link list
+    
+    Returns:
+        info
+    """
+
     cur = db.cursor()
-    sql = """
-        CREATE TABLE IF NOT EXISTS supermarketlinks (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        supermarket VARCHAR(255),
-        link VARCHAR(255)
-        );
-        """
-    cur.execute(sql)
 
     for link in links:
         sql = "INSERT INTO supermarketlinks (supermarket,link) VALUES ('ExcelsiorGama', '%s')" % (link);    
@@ -98,6 +149,15 @@ def save_to_db(db, links):
 
 
 def delete_db(db):
+
+    """
+    Function:
+        Ask the user if he wants to delete the db 
+
+    Args:
+        db: database connection
+    """
+
     cur = db.cursor()
     option = input("Puede que exista una base de datos anterior ¿Desea borrarla?(Y/n)")
     if option == "Y" or option == "y":
@@ -111,6 +171,23 @@ def delete_db(db):
 
 
 def run_script_and_save_data():
+
+    """
+    Function:
+    
+        Declare a variable index, open the 
+        database using the open_database() function
+        iterate each category in categories
+        Gets the range for the following for.
+
+        Inside the following for loop, open 
+        the database again modify a str to get 
+        the correct link and using the above 
+        functions get the links to Gama's products
+        At the end add one to the variable index
+    
+    """
+
     index = 0
     database = open_database()
     delete_db(database)
@@ -132,4 +209,6 @@ def run_script_and_save_data():
             
         index += 1
 
-run_script_and_save_data()
+
+if __name__ == "__main__":
+    run_script_and_save_data()

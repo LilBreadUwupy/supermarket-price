@@ -26,8 +26,20 @@ CREATE TABLE IF NOT EXISTS products (
     link VARCHAR(255)
 );
 
+CREATE TABLE IF NOT EXISTS productstest (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product VARCHAR(255),
+    price VARCHAR(255),
+    img VARCHAR(255),
+    supermarket VARCHAR(255),
+    link VARCHAR(255)
+);
+
+
+
 SELECT COUNT(*) AS link_exists FROM products WHERE link="https://gamanlinea.com/VIVERES/Aceites-y-aderezos/Sazonadores/SALSA-INGLESA-EXCELSIOR-GAMA-150-CC/p/10014782";
 
+DROPIFEXISTSproductstest;
 
 SELECT * FROM products WHERE supermarket ='ExcelsiorGama' AND (product LIKE "frijoles");
 

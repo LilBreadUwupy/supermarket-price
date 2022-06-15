@@ -35,12 +35,10 @@ def request_url(link):
 
 def check_link(db, link):
     cur = db.cursor()
-    #print(f"Este es el link {link}")
     sql = "SELECT COUNT(*) FROM products WHERE link='%s'" % link ;
     cur.execute(sql)
     exists = cur.fetchall()
     exists = exists[0][0]
-    #print(f'Existe? {exists}')
     if exists > 0:
         return True
     else: 
@@ -51,7 +49,7 @@ def get_name(soup):
 
     product = soup.find("div", {"class":"name"})
     product = str(re.findall('name">[A-ZÁÉÍÓÚ0-9a-záéíóúñÑ &%-/]*<', str(product)))
-    product = product.replace('[', '').replace("'", "").replace("]", "").replace('name">', "").replace('<', "").lower()
+    product = product.replace('[', '').replace("'", "").replace("]", "").replace('name">', "").replace('<', "").replace(".", "").lower()
 
     return product
 
@@ -145,6 +143,3 @@ def get_links_and_run_script():
         
 
 get_links_and_run_script()
-# soup = request_url('https://gamaenlinea.com/ALIMENTOS-FRESCOS/Carnes/Pollo/POLLO-A-LA-BRASA-1-UN/p/28002125')
-# name = get_name(soup)
-# print(get_img(soup, name))
