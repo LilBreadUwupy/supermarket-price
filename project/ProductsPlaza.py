@@ -71,13 +71,11 @@ def get_img(soup, name):
         img = re.findall('./[A-Z-]*/[0-9]*/[A-Za-z0-9]*.jpg[?0-9]*', img)
 
         if img:
-            
             img_name = name.replace(' ', "").replace('/', "").replace("\t", "").replace(",", "")
             img_name = img_name + '.jpg'
             img = "https://www.elplazas.com/" + img[0]
             folder = f"static/img/AutomercadoPlazas/{img_name}"
             connection = False
-
             while not connection:
                 try:
                     r = requests.get(img).content
@@ -86,8 +84,7 @@ def get_img(soup, name):
                     print('SSLError: reintentado en 20 segundos')
                     sleep(20)
             with open(folder, "wb") as file:
-                file.write(r)
-            
+                file.write(r)            
             return folder
 
 
