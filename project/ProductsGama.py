@@ -48,8 +48,8 @@ def check_link(db, link):
 def get_name(soup):
 
     product = soup.find("div", {"class":"name"})
-    product = str(re.findall('name">[A-ZÁÉÍÓÚ0-9a-záéíóúñÑ &%-/]*<', str(product)))
-    product = product.replace('[', '').replace("'", "").replace("]", "").replace('name">', "").replace('<', "").replace(".", "").lower()
+    product = str(re.findall('name">[A-Z ÁÉÍÓÚ0-9a-záéíóúñÑ &;%-/´° #"]*<', str(product)))
+    product = product.replace('[', '').replace("'", "").replace("]", "").replace('name">', "").replace('<', "").replace(".", "").replace("amp;", "").replace("&", "").lower()
 
     return product
 
